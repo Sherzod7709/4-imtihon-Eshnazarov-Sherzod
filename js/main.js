@@ -72,18 +72,18 @@ elAddParrotForm.addEventListener('submit', e => {
     const addInputTitle = formElements.parrotTitle.value.trim();
     const addInputImgUrL = formElements.parrotImg.value;
     const addInputPriece = +formElements.price.value.trim();
-    //const addInputDate = formElements.parrotDate.value.trim();
+    const addInputDate = formElements.parrotDate.value.trim();
     const addInputWidth = +formElements.parrotWidth.value.trim();
     const addInputHeight = +formElements.ParrotHeight.value.trim();
     const addFecturers = formElements.features.value.trim();
     
-    if (addInputTitle && addInputImgUrL && addInputPriece>0 && addInputWidth>0 && addInputHeight>0){
+    if (addInputTitle && addInputImgUrL && addInputPriece>0 && addInputWidth>0 && addInputHeight>0 && addInputDate){
         const addingParrot = {
             id:Math.floor(Math.random()*100),
             title:addInputTitle,
             img:addInputImgUrL,
             price:addInputPriece,
-            birthDate:new Date().toISOString(),
+            birthDate:addInputDate,
             sizes:{
                 width:+addInputWidth,
                 height:+addInputHeight
