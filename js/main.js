@@ -60,10 +60,10 @@ const renderParrot = () => {
     filterParrots();
     let totalPrice = 0;
     elParrotShoving.forEach( parrot => {
-        totalPrice += parrot.price
-    })
-    const averagePrice = totalPrice / elParrotShoving.length;
-    elAverage.textContent = `Average-Price:${averagePrice.toFixed()}$`
+        totalPrice += +parrot.price ;
+    });
+    elAverage.textContent = `Average-Price:${Math.ceil(+(totalPrice/elParrotShoving.length))}$`;
+
     elCount.textContent = `count:${elParrotShoving.length}`
     elParrotShoving.forEach ((parrot) => {
         const elParrotRow = creatParrotRow(parrot);
