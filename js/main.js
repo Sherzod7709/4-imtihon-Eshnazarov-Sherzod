@@ -1,6 +1,7 @@
 const elFormTemplate = document.querySelector('#form-template');
 const elParrotWrapper = document.querySelector('.parrots-wrapper');
 const elCount  = document.querySelector('#count')
+const elFilterForm = document.querySelector('#filter-form')
 
 const addZero = num => { return num < 10 ? "0" + num : num };
 
@@ -48,18 +49,26 @@ const creatParrotRow = (parrot) => {
     return elParrotRow;
 };
 
+let elParrotShoving = parrots.slice();
 
 
 
+let elAverage = document.querySelector('#average')
 
-
-const renderParrot = ( Array = parrots ) => {
+const renderParrot = () => {
     elParrotWrapper.innerHTML = "";
-    Array.forEach ((parrot) => {
+    filterParrots();
+    let totalPrice = 0;
+    elParrotShoving.forEach( parrot => {
+        totalPrice += parrot.price
+    })
+    const averagePrice = totalPrice / elParrotShoving.length;
+    elAverage.textContent = `Average-Price:${averagePrice.toFixed()}$`
+    elCount.textContent = `count:${elParrotShoving.length}`
+    elParrotShoving.forEach ((parrot) => {
         const elParrotRow = creatParrotRow(parrot);
         elParrotWrapper.appendChild(elParrotRow);
     })
-    elCount.textContent = `count:${parrots.length}`
 }
 renderParrot();
 
@@ -91,11 +100,12 @@ elAddParrotForm.addEventListener('submit', e => {
             features:addFecturers
         }
         parrots.unshift(addingParrot);
+        elParrotShoving.unshift(addingParrot);//
+        elCount.textContent = `count:${parrots.length}`;
         const elNewParrot = creatParrotRow(addingParrot);
         elParrotWrapper.prepend(elNewParrot)
         elAddParrotForm.reset();
     }
-    elCount.textContent = `count:${parrots.length}`;
 });
 
 const elEditModal = new bootstrap.Modal('#edit-parrot-modal')
@@ -116,7 +126,9 @@ elParrotWrapper.addEventListener('click', (e) => {
         const clickedBtnIndex = parrots.findIndex(parrot => {
             return parrot.id === clickBtnId ;
         })
+        const clickedBtnItemIndex = elParrotShoving.findIndex( parrot => parrot.id === clickBtnId );
         parrots.splice(clickedBtnIndex,1)
+        elParrotShoving.splice(clickedBtnItemIndex,1)
         renderParrot();
     }
     
@@ -173,6 +185,7 @@ elEditForm.addEventListener('submit' , (e) => {
     
     if (elTitleValue && elImgValue && elPriceValue>0 && elWidthValue && elHeightValue){
         const submittingIndex = parrots.findIndex( parrot =>  parrot.id === submittingId );
+        const submitShovingIndex = elParrotShoving.findIndex( parrot =>  parrot.id === submittingId );
         
         const submittingObg = {
             title: elTitleValue,
@@ -187,16 +200,16 @@ elEditForm.addEventListener('submit' , (e) => {
             features: elFeaturerValue || "",
             id: submittingId,
         };
-        parrots.splice( submittingIndex , 1 , submittingObg )
+        parrots.splice( submittingIndex , 1 , submittingObg );
+        elParrotShoving.splice( submitShovingIndex, 1, submittingObg );
+        
         renderParrot()
         elEditModal.hide();
     }
 })
 
-const elFilterForm = document.querySelector('#filter-form')
-elFilterForm.addEventListener('submit', e =>{
-    e.preventDefault();
-    const elfilterElements = e.target.elements;
+function filterParrots() {
+    const elfilterElements = elFilterForm.elements;
     const searchTitle = elfilterElements.search.value;
     const fromValue = elfilterElements.from.value;
     const toValue = elfilterElements.to.value;
@@ -208,7 +221,7 @@ elFilterForm.addEventListener('submit', e =>{
     const elSort = elfilterElements.sortby.value;
     
     
-    const filterParrots = parrots.filter(function(element) {
+    elParrotShoving = parrots.filter(function(element) {
         const nameMatches = element.title.toLowerCase().includes(searchTitle.toLowerCase());
         return nameMatches;
     })
@@ -253,7 +266,11 @@ elFilterForm.addEventListener('submit', e =>{
         }
         return 0;
     })
-    renderParrot(filterParrots); 
+}
+
+elFilterForm.addEventListener('submit', e =>{
+    e.preventDefault();
+    renderParrot();
 });
 
 // const elStar = document.querySelector('#star');
