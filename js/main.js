@@ -105,6 +105,13 @@ elAddParrotForm.addEventListener('submit', e => {
         const elNewParrot = creatParrotRow(addingParrot);
         elParrotWrapper.prepend(elNewParrot)
         elAddParrotForm.reset();
+        
+        let totalPrice = 0;
+    elParrotShoving.forEach( parrot => {
+        totalPrice += +parrot.price ;
+    });
+    elAverage.textContent = `Average-Price:${Math.ceil(+(totalPrice/elParrotShoving.length))}$`;
+
     }
 });
 
